@@ -1,0 +1,18 @@
+# Secrets — never commit your real .env
+.env
+
+# Local database (each deployment gets its own fresh one)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS / editor cruft
+.DS_Store
+.vscode/
