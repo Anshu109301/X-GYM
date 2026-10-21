@@ -1,0 +1,37 @@
+# Render Blueprint — "New + → Blueprint" and point it at your GitHub repo.
+# FREE plan:  no persistent disk → the database resets on every redeploy/restart.
+#             Fine for trying it out. Download a backup from Admin → Settings often.
+# PAID plan:  uncomment the `disk` block and DB_PATH below → data survives redeploys.
+services:
+  - type: web
+    name: xgym
+    runtime: python
+    plan: free                      # change to `starter` (paid) when you want a persistent disk
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers 1 --threads 4 --timeout 60 --access-logfile -
+    healthCheckPath: /api/health
+    # disk:                         # ← needs a paid plan (check Render's current pricing)
+    #   name: xgym-data
+    #   mountPath: /var/data
+    #   sizeGB: 1
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.3
+      - key: SESSION_COOKIE_SECURE
+        value: "1"
+      - key: SECRET_KEY
+        generateValue: true         # Render invents a strong random value for you
+      - key: CRON_SECRET
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        sync: false                 # you type this in the Render dashboard
+      - key: REVENUE_PIN
+        sync: false                 # optional — leave empty for no extra lock
+      - key: META_ACCESS_TOKEN
+        sync: false
+      - key: META_PHONE_NUMBER_ID
+        sync: false
+      - key: META_TEMPLATE_NAME
+        value: gym_membership_reminder
+      # - key: DB_PATH              # ← uncomment together with the disk above
+      #   value: /var/data/xgym.db
